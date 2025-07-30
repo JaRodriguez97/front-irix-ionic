@@ -1,0 +1,7 @@
+{
+  "name": "front-irix-ionic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
