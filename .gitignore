@@ -20,8 +20,11 @@ log.txt
 # Ionic
 /.ionic
 /www
+/android
+/ios
 /platforms
-/plugins
+/plugins/**/node_modules
+/plugins/**/dist
 
 # Compiled output
 /dist
@@ -68,3 +71,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+.qodo

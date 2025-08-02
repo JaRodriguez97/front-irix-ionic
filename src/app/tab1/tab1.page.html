@@ -1,17 +1,59 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <ion-title> Cámara en Tiempo Real </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
+      <ion-title size="large">Cámara en Tiempo Real</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+  <div class="camera-container">
+    <!-- Controles superiores -->
+    <div class="top-controls">
+      <ion-button expand="block" color="primary" (click)="startCamera()">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        {{ cameraActive ? 'Detener Cámara' : 'Iniciar Cámara' }}
+      </ion-button>
+      
+      <ion-button expand="block" color="secondary" (click)="showCameraInfo()">
+        <ion-icon name="information-circle" slot="start"></ion-icon>
+        Información de la Cámara
+      </ion-button>
+    </div>
+
+    <!-- Vista de la cámara con táctil -->
+    <div
+      id="cameraPreview"
+      class="camera-preview"
+      (touchstart)="onCameraTouch($event)"
+      [class.camera-inactive]="!cameraActive"
+    >
+      <!-- Indicador de enfoque -->
+      <div class="focus-indicator" *ngIf="cameraActive">
+        <p>Toca para enfocar</p>
+      </div>
+
+      <!-- Mensaje cuando la cámara está inactiva -->
+      <div class="camera-placeholder" *ngIf="!cameraActive">
+        <ion-icon name="camera-outline" size="large"></ion-icon>
+        <p>Presiona "Iniciar Cámara" para comenzar</p>
+      </div>
+    </div>
+
+    <!-- Controles inferiores -->
+    <div class="bottom-controls" *ngIf="cameraActive">
+      <!-- Fila 3: Indicadores -->
+      <div class="control-row indicators">
+        <span class="indicator"
+          >{{ currentCamera === 'rear' ? 'Trasera' : 'Frontal' }}</span
+        >
+        <!-- <span class="indicator">Flash: {{ flashMode }}</span> -->
+        <span class="indicator">HD</span>
+      </div>
+    </div>
+  </div>
 </ion-content>
