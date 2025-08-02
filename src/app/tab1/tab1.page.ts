@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import {
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButton,
-  IonIcon,
-} from '@ionic/angular/standalone';
 import { CommonModule } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   CameraPreview,
   CameraPreviewOptions,
 } from '@capacitor-community/camera-preview';
 import { Camera } from '@capacitor/camera';
+import {
+  IonButton,
+  IonContent,
+  IonHeader,
+  IonIcon,
+  IonTitle,
+  IonToolbar,
+} from '@ionic/angular/standalone';
 import { CameraInfo } from '@irix/camera-info';
 
 @Component({
@@ -33,9 +33,9 @@ import { CameraInfo } from '@irix/camera-info';
 export class Tab1Page implements OnInit, OnDestroy {
   cameraActive = false;
   currentCamera = 'rear';
-  
+
   // Configuraciones de alta calidad
-  private maxWidth = 0;  // Sin límite (máxima resolución disponible)
+  private maxWidth = 0; // Sin límite (máxima resolución disponible)
   private maxHeight = 0; // Sin límite (máxima resolución disponible)
   private quality = 100; // Máxima calidad
   private supportedResolutions: any[] = [];
@@ -81,8 +81,8 @@ export class Tab1Page implements OnInit, OnDestroy {
    */
   async getDetailedCameraInfo() {
     try {
-      const cameraInfo = await CameraInfo.getCameraInfo({ 
-        camera: this.currentCamera === 'rear' ? 'back' : 'front' 
+      const cameraInfo = await CameraInfo.getCameraInfo({
+        camera: this.currentCamera === 'rear' ? 'back' : 'front',
       });
       console.log('Información detallada de la cámara:', cameraInfo);
       return cameraInfo;
@@ -100,13 +100,15 @@ export class Tab1Page implements OnInit, OnDestroy {
     if (cameraInfo) {
       alert(
         `ID: ${cameraInfo.id}\n` +
-        `Lente: ${cameraInfo.facing}\n` +
-        `Res. Soportadas: ${cameraInfo.supportedResolutions.map(r => r.width + 'x' + r.height).join(', ')}\n` +
-        `Zoom Máx.: ${cameraInfo.maxZoom}\n` +
-        `Tiene Flash: ${cameraInfo.hasFlash}\n` +
-        `Modos de Enfoque: ${cameraInfo.supportedFocusModes.join(', ')}\n` +
-        `ISO: ${cameraInfo.supportedIsoRanges.min}-${cameraInfo.supportedIsoRanges.max}\n` +
-        `Exposición: ${cameraInfo.supportedExposureRange.min}-${cameraInfo.supportedExposureRange.max}\n`
+          `Lente: ${cameraInfo.facing}\n` +
+          `Res. Soportadas: ${cameraInfo.supportedResolutions
+            .map((r) => r.width + 'x' + r.height)
+            .join(', ')}\n` +
+          `Zoom Máx.: ${cameraInfo.maxZoom}\n` +
+          `Tiene Flash: ${cameraInfo.hasFlash}\n` +
+          `Modos de Enfoque: ${cameraInfo.supportedFocusModes.join(', ')}\n` +
+          `ISO: ${cameraInfo.supportedIsoRanges.min}-${cameraInfo.supportedIsoRanges.max}\n` +
+          `Exposición: ${cameraInfo.supportedExposureRange.min}-${cameraInfo.supportedExposureRange.max}\n`
       );
     } else {
       alert('No se pudo obtener la información de la cámara.');
@@ -119,38 +121,45 @@ export class Tab1Page implements OnInit, OnDestroy {
   async getSupportedResolutions() {
     try {
       // Usar nuestro plugin personalizado para obtener resoluciones reales
-      const result = await CameraInfo.getSupportedResolutions({ 
-        camera: this.currentCamera === 'rear' ? 'back' : 'front' 
+      const result = await CameraInfo.getSupportedResolutions({
+        camera: this.currentCamera === 'rear' ? 'back' : 'front',
       });
-      
+
       this.supportedResolutions = result.resolutions || [];
-      
+
       // Seleccionar la resolución más alta disponible
       if (this.supportedResolutions.length > 0) {
-        this.currentResolution = this.supportedResolutions.reduce((max, current) => {
-          return (current.width * current.height) > (max.width * max.height) ? current : max;
-        });
+        this.currentResolution = this.supportedResolutions.reduce(
+          (max, current) => {
+            return current.width * current.height > max.width * max.height
+              ? current
+              : max;
+          }
+        );
         console.log('Resolución máxima encontrada:', this.currentResolution);
         console.log('Todas las resoluciones:', this.supportedResolutions);
       } else {
         // Fallback a configuraciones predeterminadas
         this.supportedResolutions = [
           { width: 1920, height: 1080 }, // Full HD
-          { width: 1280, height: 720 },  // HD
-          { width: 854, height: 480 },   // 480p
+          { width: 1280, height: 720 }, // HD
+          { width: 854, height: 480 }, // 480p
         ];
         this.currentResolution = this.supportedResolutions[0];
         console.log('Usando resoluciones por defecto');
       }
-      
+
       return this.supportedResolutions;
     } catch (error) {
-      console.log('Error al obtener resoluciones con plugin, usando por defecto:', error);
+      console.log(
+        'Error al obtener resoluciones con plugin, usando por defecto:',
+        error
+      );
       // Fallback a configuraciones predeterminadas
       this.supportedResolutions = [
         { width: 1920, height: 1080 }, // Full HD
-        { width: 1280, height: 720 },  // HD
-        { width: 854, height: 480 },   // 480p
+        { width: 1280, height: 720 }, // HD
+        { width: 854, height: 480 }, // 480p
       ];
       this.currentResolution = this.supportedResolutions[0];
       return this.supportedResolutions;
@@ -162,15 +171,15 @@ export class Tab1Page implements OnInit, OnDestroy {
     try {
       // Obtener resoluciones soportadas antes de iniciar
       await this.getSupportedResolutions();
-      
+
       const container = document
         .getElementById('cameraPreview')
         .getBoundingClientRect();
-      
+
       // Usar la resolución máxima si está disponible, sino usar dimensiones del contenedor
       let previewWidth = Math.floor(container.width) || 320;
       let previewHeight = Math.floor(container.height) || 400;
-      
+
       const cameraPreviewOptions: CameraPreviewOptions = {
         position: this.currentCamera as 'rear' | 'front',
         parent: 'cameraPreview',
@@ -194,23 +203,23 @@ export class Tab1Page implements OnInit, OnDestroy {
         toBack: false, // Mantener en primer plano
         enableHighResolution: true, // Habilitar alta resolución
         enableZoom: true, // Habilitar capacidades de zoom
-        
+
         // Configuraciones adicionales para calidad
         //tapPhoto: true, // Permitir tap para tomar foto
         //tapFocus: true, // Permitir tap para enfocar
-       // previewDrag: false, // Desactivar arrastre para mejor estabilidad
-        
+        // previewDrag: false, // Desactivar arrastre para mejor estabilidad
+
         // Configuraciones específicas según la resolución disponible
         ...(this.currentResolution && {
           // Si tenemos resolución máxima disponible, configurarla
-          pictureSize: `${this.currentResolution.width}x${this.currentResolution.height}`
-        })
+          pictureSize: `${this.currentResolution.width}x${this.currentResolution.height}`,
+        }),
       };
-      
+
       console.log('Iniciando cámara con opciones:', cameraPreviewOptions);
       this.cameraActive = true;
       await CameraPreview.start(cameraPreviewOptions);
-      
+
       console.log('Cámara iniciada exitosamente');
     } catch (error) {
       this.cameraActive = false;
