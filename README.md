@@ -27,7 +27,12 @@
 
 ```
 front-irix-ionic/
-├── 📱 src/app/tab1/          # Componente principal de cámara
+├── 📱 src/app/
+│   ├── core/                 # 🆕 Módulo central (v1.1)
+│   │   ├── services/         # Servicios modulares
+│   │   ├── models/          # Interfaces y tipos
+│   │   └── index.ts         # Exportaciones centralizadas
+│   └── tab1/                # Componente principal de cámara
 ├── 🔌 plugins/camera-info/   # Plugin personalizado nativo
 ├── 📋 capacitor.config.ts    # Configuración de Capacitor
 ├── ⚙️  ionic.config.json     # Configuración de Ionic
@@ -39,6 +44,7 @@ front-irix-ionic/
 - **Frontend**: Ionic 8.0 + Angular 20.0
 - **Mobile Runtime**: Capacitor 7.4
 - **Lenguaje**: TypeScript 5.8
+- **Arquitectura**: Modular con servicios especializados (v1.1)
 - **Plugin Nativo**: Java (Android Camera2 API)
 - **UI Components**: Ionic Components + SCSS personalizado
 - **Preparado para IA**: TensorFlow.js integrado
@@ -59,7 +65,6 @@ front-irix-ionic/
 
 - 🖼️ **Resoluciones**: Lista completa de tamaños soportados
 - 🔍 **Zoom Digital**: Capacidad máxima de zoom
-- ⚡ **Flash**: Disponibilidad y modos de flash
 - 🎯 **Enfoque**: Modos de autoenfoque soportados
 - 📷 **ISO**: Rango de sensibilidad ISO
 - 🌅 **Exposición**: Rango de compensación de exposición
@@ -128,7 +133,6 @@ console.log(cameraInfo);
   facing: "back",
   supportedResolutions: [...],
   maxZoom: 10.0,
-  hasFlash: true,
   supportedFocusModes: ["auto", "continuous"],
   supportedIsoRanges: { min: 100, max: 3200 },
   supportedExposureRange: { min: -12, max: 12 }
@@ -232,13 +236,24 @@ npx cap run android
 - [x] 📸 Captura de imágenes en alta resolución
 - [x] 🔄 Alternancia entre cámaras frontal/trasera
 
-### 🚧 En Desarrollo (v1.1)
+### ✅ Completado (v1.1)
 
-- [ ] 🔍 Controles y verificación de permisos de zoom digital y/o optico
-- [ ] ⚡ quitar todo lo relacionado con Controles y permisos de flash
-- [ ] 📱 Modularización de lo que hay para mantener arquitectura básica pero bien estructurada
-- [ ] 🎥 captura en tiempo real del stream  video en 1280x720 de calidad (camera preview o actualizar plugin personalizado)
-- [ ] 🤖 Integración de IA (Tensor flow con detección de vechículos con placas vehiculares sin ocr) para análisis de stream de video
+- [x] ⚡ **Flash completamente removido** del plugin según roadmap v1.1
+- [x] 📱 **Arquitectura modular completada** con servicios unificados:
+  - `CameraService` - Gestión de estado y operaciones de cámara
+  - `CameraInfoService` - Información técnica detallada
+  - `PermissionsService` - Manejo centralizado de permisos
+- [x] 🔍 **Controles de zoom** implementados con verificación de permisos
+- [x] 🛠️ **Plugin personalizado** compilado y funcional
+- [x] ⚙️ **Resolución de conflictos TypeScript** en modelos e interfaces
+- [x] 🎯 **Integración completa** entre servicios modulares y componentes
+
+### 🚧 En Desarrollo (v1.2)
+
+- [ ] 🔍 si el dispotisitivo cuenta con zoom optico, habilitar y solicitar permiso, si el zoom es digital ignorar todo lo relacionado con el zoom
+- [ ] 📱  modularizar tab1, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
+- [ ] 🎥 Captura en tiempo real del stream video en 1280x720 de calidad
+- [ ] 🤖 Integración de IA (TensorFlow con detección de vehículos con placas vehiculares sin OCR)
 
 ### 🎯 Próximas Funcionalidades (v2.0)
 

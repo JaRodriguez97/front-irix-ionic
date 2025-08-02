@@ -25,6 +25,8 @@ log.txt
 /platforms
 /plugins/**/node_modules
 /plugins/**/dist
+/plugins/**/android/build/
+/plugins/**/android/build/**/*
 
 # Compiled output
 /dist

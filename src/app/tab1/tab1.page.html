@@ -14,7 +14,11 @@
   <div class="camera-container">
     <!-- Controles superiores -->
     <div class="top-controls">
-      <ion-button expand="block" color="primary" (click)="startCamera()">
+      <ion-button
+        expand="block"
+        color="primary"
+        (click)="cameraActive ? stopCamera() : startCamera()"
+      >
         <ion-icon name="camera" slot="start"></ion-icon>
         {{ cameraActive ? 'Detener Cámara' : 'Iniciar Cámara' }}
       </ion-button>
@@ -46,13 +50,22 @@
 
     <!-- Controles inferiores -->
     <div class="bottom-controls" *ngIf="cameraActive">
-      <!-- Fila 3: Indicadores -->
+      <div class="control-row actions">
+        <ion-button color="medium" (click)="flipCamera()">
+          <ion-icon name="camera-reverse" slot="start"></ion-icon>
+          Cambiar
+        </ion-button>
+      </div>
+
+      <!-- Indicadores -->
       <div class="control-row indicators">
         <span class="indicator"
           >{{ currentCamera === 'rear' ? 'Trasera' : 'Frontal' }}</span
         >
-        <!-- <span class="indicator">Flash: {{ flashMode }}</span> -->
         <span class="indicator">HD</span>
+        <span class="indicator" *ngIf="isZoomSupported"
+          >Zoom: {{ currentZoom }}x/{{ maxZoom }}x</span
+        >
       </div>
     </div>
   </div>

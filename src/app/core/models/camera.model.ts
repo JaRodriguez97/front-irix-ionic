@@ -1,20 +1,4 @@
-export interface CameraInfoPlugin {
-  /**
-   * Obtiene las resoluciones soportadas por la cámara
-   */
-  getSupportedResolutions(options: { camera: string }): Promise<{ resolutions: CameraResolution[] }>;
-  
-  /**
-   * Obtiene información detallada de la cámara
-   */
-  getCameraInfo(options: { camera: string }): Promise<CameraInfo>;
-  
-  /**
-   * Obtiene todas las cámaras disponibles
-   */
-  getAvailableCameras(): Promise<{ cameras: CameraDevice[] }>;
-}
-
+// Definir tipos localmente para evitar problemas de importación
 export interface CameraResolution {
   width: number;
   height: number;
@@ -35,4 +19,20 @@ export interface CameraDevice {
   id: string;
   facing: 'front' | 'back';
   description?: string;
+}
+
+export interface CameraState {
+  isActive: boolean;
+  currentCamera: 'rear' | 'front';
+  currentResolution: CameraResolution | null;
+  supportedResolutions: CameraResolution[];
+  zoomLevel: number;
+  maxZoom: number;
+}
+
+export interface CameraSettings {
+  quality: number;
+  enableHighResolution: boolean;
+  enableZoom: boolean;
+  preferredResolution?: CameraResolution;
 }

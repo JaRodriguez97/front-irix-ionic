@@ -1,11 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
-  CameraPreview,
-  CameraPreviewOptions,
-} from '@capacitor-community/camera-preview';
-import { Camera } from '@capacitor/camera';
-import {
   IonButton,
   IonContent,
   IonHeader,
@@ -13,7 +8,17 @@ import {
   IonTitle,
   IonToolbar,
 } from '@ionic/angular/standalone';
-import { CameraInfo } from '@irix/camera-info';
+import { Subscription } from 'rxjs';
+
+// Core services y modelos
+import {
+  CameraInfo,
+  CameraInfoService,
+  CameraResolution,
+  CameraService,
+  CameraState,
+  PermissionsService,
+} from '../core';
 
 @Component({
   selector: 'app-tab1',
@@ -31,84 +36,82 @@ import { CameraInfo } from '@irix/camera-info';
   ],
 })
 export class Tab1Page implements OnInit, OnDestroy {
-  cameraActive = false;
-  currentCamera = 'rear';
+  // Estado de la cámara usando servicios modulares
+  cameraState: CameraState = {
+    isActive: false,
+    currentCamera: 'rear',
+    currentResolution: null,
+    supportedResolutions: [],
+    zoomLevel: 1,
+    maxZoom: 1,
+  };
 
-  // Configuraciones de alta calidad
-  private maxWidth = 0; // Sin límite (máxima resolución disponible)
-  private maxHeight = 0; // Sin límite (máxima resolución disponible)
-  private quality = 100; // Máxima calidad
-  private supportedResolutions: any[] = [];
-  private currentResolution: any = null;
+  private cameraStateSubscription?: Subscription;
+
+  constructor(
+    private cameraService: CameraService,
+    private cameraInfoService: CameraInfoService,
+    private permissionsService: PermissionsService
+  ) {}
 
   ngOnInit() {
-    console.log('App iniciada');
+    console.log('App iniciada - Arquitectura Modular v1.1');
+    // Suscribirse al estado de la cámara
+    this.cameraStateSubscription = this.cameraService.cameraState$.subscribe(
+      (state: CameraState) => {
+        this.cameraState = state;
+        console.log('Estado de cámara actualizado:', state);
+      }
+    );
   }
 
   ngOnDestroy() {
     this.stopCamera();
-  }
-
-  async checkCameraPermissions(): Promise<boolean> {
-    try {
-      const permissions = await Camera.checkPermissions();
-      if (permissions.camera !== 'granted') {
-        const requestResult = await Camera.requestPermissions();
-        if (requestResult.camera !== 'granted') {
-          alert(
-            'Se requieren permisos de cámara. Por favor, habilítalos en configuración.'
-          );
-          return false;
-        }
-      }
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  async getCameraCapabilities() {
-    try {
-      const capabilities = await CameraPreview.getSupportedFlashModes();
-      return capabilities;
-    } catch {
-      return null;
+    if (this.cameraStateSubscription) {
+      this.cameraStateSubscription.unsubscribe();
     }
   }
 
   /**
-   * Obtiene información detallada de la cámara usando nuestro plugin personalizado
+   * Propiedades de compatibilidad para el template
    */
-  async getDetailedCameraInfo() {
-    try {
-      const cameraInfo = await CameraInfo.getCameraInfo({
-        camera: this.currentCamera === 'rear' ? 'back' : 'front',
-      });
-      console.log('Información detallada de la cámara:', cameraInfo);
-      return cameraInfo;
-    } catch (error) {
-      console.log('Error al obtener información de la cámara:', error);
-      return null;
-    }
+  get cameraActive(): boolean {
+    return this.cameraState.isActive;
+  }
+
+  get currentCamera(): 'rear' | 'front' {
+    return this.cameraState.currentCamera;
   }
 
   /**
-   * Muestra información detallada de la cámara en un alert
+   * Obtiene información detallada de la cámara usando servicios modulares
+   */
+  async getDetailedCameraInfo(): Promise<CameraInfo | null> {
+    return await this.cameraInfoService.getCameraInfo(
+      this.cameraState.currentCamera
+    );
+  }
+
+  /**
+   * Muestra información detallada de la cámara en un alert (sin flash según v1.1)
    */
   async showCameraInfo() {
     const cameraInfo = await this.getDetailedCameraInfo();
     if (cameraInfo) {
+      const zoomPermissions = await this.cameraService.checkZoomPermissions();
       alert(
         `ID: ${cameraInfo.id}\n` +
           `Lente: ${cameraInfo.facing}\n` +
           `Res. Soportadas: ${cameraInfo.supportedResolutions
-            .map((r) => r.width + 'x' + r.height)
+            .map((r: CameraResolution) => r.width + 'x' + r.height)
             .join(', ')}\n` +
           `Zoom Máx.: ${cameraInfo.maxZoom}\n` +
-          `Tiene Flash: ${cameraInfo.hasFlash}\n` +
-          `Modos de Enfoque: ${cameraInfo.supportedFocusModes.join(', ')}\n` +
-          `ISO: ${cameraInfo.supportedIsoRanges.min}-${cameraInfo.supportedIsoRanges.max}\n` +
-          `Exposición: ${cameraInfo.supportedExposureRange.min}-${cameraInfo.supportedExposureRange.max}\n`
+          `Tipo de Zoom: ${zoomPermissions.type}\n` +
+          `Modos de Enfoque: ${
+            cameraInfo.supportedFocusModes?.join(', ') || 'N/A'
+          }\n` +
+          `ISO: ${cameraInfo.supportedIsoRanges?.min}-${cameraInfo.supportedIsoRanges?.max}\n` +
+          `Exposición: ${cameraInfo.supportedExposureRange?.min}-${cameraInfo.supportedExposureRange?.max}\n`
       );
     } else {
       alert('No se pudo obtener la información de la cámara.');
@@ -116,140 +119,50 @@ export class Tab1Page implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene las resoluciones soportadas por la cámara usando plugin personalizado
+   * Inicializar cámara usando servicios modulares
    */
-  async getSupportedResolutions() {
-    try {
-      // Usar nuestro plugin personalizado para obtener resoluciones reales
-      const result = await CameraInfo.getSupportedResolutions({
-        camera: this.currentCamera === 'rear' ? 'back' : 'front',
-      });
-
-      this.supportedResolutions = result.resolutions || [];
-
-      // Seleccionar la resolución más alta disponible
-      if (this.supportedResolutions.length > 0) {
-        this.currentResolution = this.supportedResolutions.reduce(
-          (max, current) => {
-            return current.width * current.height > max.width * max.height
-              ? current
-              : max;
-          }
-        );
-        console.log('Resolución máxima encontrada:', this.currentResolution);
-        console.log('Todas las resoluciones:', this.supportedResolutions);
-      } else {
-        // Fallback a configuraciones predeterminadas
-        this.supportedResolutions = [
-          { width: 1920, height: 1080 }, // Full HD
-          { width: 1280, height: 720 }, // HD
-          { width: 854, height: 480 }, // 480p
-        ];
-        this.currentResolution = this.supportedResolutions[0];
-        console.log('Usando resoluciones por defecto');
-      }
-
-      return this.supportedResolutions;
-    } catch (error) {
-      console.log(
-        'Error al obtener resoluciones con plugin, usando por defecto:',
-        error
-      );
-      // Fallback a configuraciones predeterminadas
-      this.supportedResolutions = [
-        { width: 1920, height: 1080 }, // Full HD
-        { width: 1280, height: 720 }, // HD
-        { width: 854, height: 480 }, // 480p
-      ];
-      this.currentResolution = this.supportedResolutions[0];
-      return this.supportedResolutions;
-    }
-  }
-
   async startCamera() {
-    if (this.cameraActive || !(await this.checkCameraPermissions())) return;
-    try {
-      // Obtener resoluciones soportadas antes de iniciar
-      await this.getSupportedResolutions();
-
-      const container = document
-        .getElementById('cameraPreview')
-        .getBoundingClientRect();
-
-      // Usar la resolución máxima si está disponible, sino usar dimensiones del contenedor
-      let previewWidth = Math.floor(container.width) || 320;
-      let previewHeight = Math.floor(container.height) || 400;
-
-      const cameraPreviewOptions: CameraPreviewOptions = {
-        position: this.currentCamera as 'rear' | 'front',
-        parent: 'cameraPreview',
-        className: 'cameraPreview',
-
-        // Usar dimensiones del contenedor para el preview
-        width: previewWidth,
-        height: previewHeight,
-
-        // Configuraciones para máxima calidad
-        disableExifHeaderStripping: false, // Mantener metadatos EXIF completos
-        storeToFile: false, // No guardar automáticamente para control manual
-        disableAudio: true, // Desactivar audio para mejor rendimiento de cámara
-
-        // Posición dentro del contenedor
-        x: Math.floor(container.left),
-        y: Math.floor(container.top),
-
-        // Configuraciones de orientación y calidad máxima
-        rotateWhenOrientationChanged: true,
-        toBack: false, // Mantener en primer plano
-        enableHighResolution: true, // Habilitar alta resolución
-        enableZoom: true, // Habilitar capacidades de zoom
-
-        // Configuraciones adicionales para calidad
-        //tapPhoto: true, // Permitir tap para tomar foto
-        //tapFocus: true, // Permitir tap para enfocar
-        // previewDrag: false, // Desactivar arrastre para mejor estabilidad
-
-        // Configuraciones específicas según la resolución disponible
-        ...(this.currentResolution && {
-          // Si tenemos resolución máxima disponible, configurarla
-          pictureSize: `${this.currentResolution.width}x${this.currentResolution.height}`,
-        }),
-      };
-
-      console.log('Iniciando cámara con opciones:', cameraPreviewOptions);
-      this.cameraActive = true;
-      await CameraPreview.start(cameraPreviewOptions);
-
-      console.log('Cámara iniciada exitosamente');
-    } catch (error) {
-      this.cameraActive = false;
-      console.error('Error detallado al iniciar cámara:', error);
-      alert(`No se pudo iniciar la cámara: ${error.message}`);
+    const success = await this.cameraService.startCamera('cameraPreview');
+    if (success) {
+      console.log('Cámara iniciada exitosamente con arquitectura modular');
+    } else {
+      alert('No se pudo iniciar la cámara. Verifica los permisos.');
     }
   }
 
+  /**
+   * Detener cámara usando servicios modulares
+   */
   async stopCamera() {
-    if (this.cameraActive) {
-      try {
-        await CameraPreview.stop();
-        this.cameraActive = false;
-      } catch (error) {
-        console.error('Error al detener la cámara:', error);
-      }
-    }
+    await this.cameraService.stopCamera();
   }
 
+  /**
+   * Cambiar cámara usando servicios modulares
+   */
   async flipCamera() {
-    if (this.cameraActive) {
-      try {
-        await CameraPreview.flip();
-        this.currentCamera = this.currentCamera === 'rear' ? 'front' : 'rear';
-      } catch (error) {
-        console.error('Error al voltear la cámara:', error);
-      }
+    const success = await this.cameraService.flipCamera();
+    if (!success) {
+      console.warn('No se pudo cambiar la cámara');
     }
   }
 
+  /**
+   * Capturar imagen usando servicios modulares
+   */
+  async captureHighQuality() {
+    const imageData = await this.cameraService.captureHighQuality();
+    if (imageData) {
+      console.log('Imagen capturada exitosamente:', imageData);
+      // Aquí podrías procesar la imagen capturada
+    } else {
+      alert('Error al capturar la imagen');
+    }
+  }
+
+  /**
+   * Manejo de toque para enfoque (manteniendo funcionalidad original)
+   */
   async onCameraTouch(event: TouchEvent) {
     if (this.cameraActive && event.touches.length === 1) {
       try {
@@ -257,21 +170,35 @@ export class Tab1Page implements OnInit, OnDestroy {
         const rect = (event.target as HTMLElement).getBoundingClientRect();
         const x = Math.round(((touch.clientX - rect.left) / rect.width) * 100);
         const y = Math.round(((touch.clientY - rect.top) / rect.height) * 100);
-        console.log('Enfoque en:', x, y);
+        console.log('Enfoque táctil en:', { x, y });
+
+        // TODO: Implementar enfoque táctil cuando esté disponible en el plugin
+        // await this.cameraService.setFocusPoint(x, y);
       } catch (error) {
-        console.error('Error al enfocar:', error);
+        console.error('Error al procesar toque para enfoque:', error);
       }
     }
   }
 
-  async captureHighQuality() {
-    if (this.cameraActive) {
-      try {
-        const result = await CameraPreview.capture({ quality: 100 });
-        console.log('Foto capturada:', result);
-      } catch (error) {
-        console.error('Error al capturar foto:', error);
-      }
+  /**
+   * Funciones adicionales para v1.1 - Zoom
+   */
+  async setZoom(level: number) {
+    const success = await this.cameraService.setZoom(level);
+    if (!success) {
+      console.warn('No se pudo ajustar el zoom');
     }
+  }
+
+  get currentZoom(): number {
+    return this.cameraState.zoomLevel;
+  }
+
+  get maxZoom(): number {
+    return this.cameraState.maxZoom;
+  }
+
+  get isZoomSupported(): boolean {
+    return this.cameraService.isZoomSupported();
   }
 }

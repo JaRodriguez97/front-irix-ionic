@@ -117,12 +117,6 @@ public class CameraInfoPlugin extends Plugin {
                 cameraInfo.put("maxZoom", maxZoom);
             }
             
-            // Verificar si tiene flash
-            Boolean hasFlash = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
-            if (hasFlash != null) {
-                cameraInfo.put("hasFlash", hasFlash);
-            }
-            
             // Obtener modos de enfoque soportados
             int[] focusModes = characteristics.get(CameraCharacteristics.CONTROL_AF_AVAILABLE_MODES);
             if (focusModes != null) {
