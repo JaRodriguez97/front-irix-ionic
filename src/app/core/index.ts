@@ -8,3 +8,4 @@ export * from './models/camera.model';
 export { CameraService } from './services/camera.service';
 export { CameraInfoService } from './services/camera-info.service';
 export { PermissionsService } from './services/permissions.service';
+export { AiDetectionService } from './services/ai-detection.service';

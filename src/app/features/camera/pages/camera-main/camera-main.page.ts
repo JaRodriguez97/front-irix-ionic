@@ -4,6 +4,7 @@ import { CameraInfo, CameraInfoService, CameraService, CameraState, PermissionsS
 import { CameraControlsComponent } from '../../components/camera-controls/camera-controls.component';
 import { CameraPreviewComponent } from '../../components/camera-preview/camera-preview.component';
 import { CameraInfoDisplayComponent } from '../../components/camera-info-display/camera-info-display.component';
+import { AiDetectionOverlayComponent } from '../../components/ai-detection-overlay/ai-detection-overlay.component';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -16,6 +17,7 @@ import { Subscription } from 'rxjs';
     CameraControlsComponent,
     CameraPreviewComponent,
     CameraInfoDisplayComponent,
+    AiDetectionOverlayComponent,
   ],
 })
 export class CameraMainPage implements OnInit, OnDestroy {

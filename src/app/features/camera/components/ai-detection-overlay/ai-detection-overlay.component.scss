@@ -1,0 +1,211 @@
+.ai-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 10;
+  
+  &.active { pointer-events: auto; }
+
+  .ai-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    pointer-events: auto;
+    z-index: 15;
+
+    ion-button {
+      --color: white;
+      --background: rgba(0, 0, 0, 0.7);
+      --border-radius: 20px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+  }
+
+  .ai-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 15px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+    
+    p {
+      color: white;
+      margin: 10px 0 0 0;
+      font-size: 14px;
+    }
+  }
+
+  .ai-stats {
+    position: absolute;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    min-width: 160px;
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      &:last-child { margin-bottom: 0; }
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+
+      .stat-label {
+        color: #999;
+        font-size: 10px;
+        text-transform: uppercase;
+      }
+
+      .stat-value {
+        color: #00ff88;
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 2px;
+      }
+    }
+  }
+
+  // Panel de detecciones
+  .detections-panel {
+    position: absolute;
+    bottom: 120px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.85);
+    border-radius: 15px;
+    padding: 16px;
+    backdrop-filter: blur(15px);
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+
+      ion-icon {
+        margin-right: 8px;
+        font-size: 18px;
+      }
+    }
+
+    .vehicles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .vehicle-item {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      padding: 12px;
+      border-left: 3px solid var(--ion-color-primary);
+
+      .vehicle-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 8px;
+
+        ion-badge {
+          font-size: 10px;
+          font-weight: 700;
+          --padding-start: 8px;
+          --padding-end: 8px;
+        }
+
+        .confidence {
+          color: #00ff88;
+          font-size: 12px;
+          font-weight: 600;
+        }
+      }
+
+      .plate-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 6px;
+
+        ion-icon {
+          margin-right: 6px;
+        }
+
+        .plate-text {
+          color: var(--ion-color-warning);
+          font-size: 11px;
+          font-weight: 500;
+        }
+      }
+
+      .coordinates {
+        color: #666;
+        font-size: 10px;
+        font-family: 'Courier New', monospace;
+      }
+    }
+  }
+
+  // Información del modelo
+  .model-info {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    padding: 8px 12px;
+    backdrop-filter: blur(8px);
+    display: flex;
+    gap: 12px;
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      color: #999;
+      font-size: 10px;
+      font-weight: 500;
+
+      ion-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+
+}
+
+@media (max-width: 480px) {
+  .ai-overlay {
+    .detections-panel {
+      left: 10px;
+      right: 10px;
+      bottom: 100px;
+      max-height: 150px;
+    }
+    .ai-controls { top: 10px; right: 10px; }
+    .ai-stats { top: 60px; right: 10px; min-width: 140px; }
+  }
+}

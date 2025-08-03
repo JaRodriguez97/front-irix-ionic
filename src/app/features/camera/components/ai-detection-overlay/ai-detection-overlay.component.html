@@ -1,0 +1,108 @@
+<!-- AI Detection Overlay - Superpuesto sobre la vista de cámara -->
+<div class="ai-overlay" [class.active]="isActive && aiEnabled">
+  
+  <!-- Control de activación de IA -->
+  <div class="ai-controls">
+    <ion-button 
+      (click)="toggleAI()" 
+      [color]="aiEnabled ? 'success' : 'medium'"
+      size="small"
+      fill="solid"
+      shape="round">
+      <ion-icon 
+        [name]="aiEnabled ? 'eye' : 'eye-off'" 
+        slot="start">
+      </ion-icon>
+      {{ aiEnabled ? 'IA Activa' : 'IA Inactiva' }}
+    </ion-button>
+  </div>
+
+  <!-- Indicador de carga de modelo -->
+  <div class="ai-loading" *ngIf="isProcessing && !isAiInitialized">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Cargando modelo de IA...</p>
+  </div>
+
+  <!-- Estadísticas de rendimiento -->
+  <div class="ai-stats" *ngIf="aiEnabled && isAiInitialized">
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-label">FPS:</span>
+        <span class="stat-value">{{ stats.fps }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Tiempo:</span>
+        <span class="stat-value">{{ stats.lastProcessingTime.toFixed(0) }}ms</span>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-label">Frames:</span>
+        <span class="stat-value">{{ stats.totalFramesProcessed }}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Vehículos:</span>
+        <span class="stat-value">{{ stats.vehiclesDetected }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detecciones actuales -->
+  <div class="detections-panel" *ngIf="currentDetection && currentDetection.vehicles.length > 0">
+    <div class="panel-header">
+      <ion-icon name="car-sport" color="primary"></ion-icon>
+      <span>{{ currentDetection.vehicles.length }} Vehículo(s) Detectado(s)</span>
+    </div>
+    
+    <div class="vehicles-list">
+      <div 
+        class="vehicle-item" 
+        *ngFor="let vehicle of currentDetection.vehicles; trackBy: trackByVehicle">
+        
+        <!-- Información del vehículo -->
+        <div class="vehicle-info">
+          <ion-badge [color]="getVehicleColor(vehicle.type)">
+            {{ vehicle.type.toUpperCase() }}
+          </ion-badge>
+          <span class="confidence">{{ (vehicle.confidence * 100).toFixed(1) }}%</span>
+        </div>
+        
+        <!-- Información de placa -->
+        <div class="plate-info" *ngIf="vehicle.hasLicensePlate">
+          <ion-icon name="document-text" color="warning" size="small"></ion-icon>
+          <span class="plate-text">Placa detectada ({{ (vehicle.licensePlateRegion?.confidence || 0).toFixed(2) }})</span>
+        </div>
+        
+        <!-- Coordenadas del bounding box -->
+        <div class="coordinates" *ngIf="currentDetection">
+          <small>
+            {{ vehicle.boundingBox.x.toFixed(0) }}, {{ vehicle.boundingBox.y.toFixed(0) }} 
+            ({{ vehicle.boundingBox.width.toFixed(0) }}x{{ vehicle.boundingBox.height.toFixed(0) }})
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Información del modelo -->
+  <div class="model-info" *ngIf="aiEnabled && isAiInitialized">
+    <div class="info-item">
+      <ion-icon name="hardware-chip" size="small"></ion-icon>
+      <span>{{ aiModelInfo.backend }}</span>
+    </div>
+    <div class="info-item" *ngIf="aiModelInfo.memory">
+      <ion-icon name="speedometer" size="small"></ion-icon>
+      <span>{{ aiModelInfo.memory.numTensors }} tensors</span>
+    </div>
+  </div>
+
+  <!-- Overlay visual para bounding boxes (futuro) -->
+  <!-- 
+  Este overlay se puede usar en el futuro para dibujar rectángulos 
+  sobre los vehículos detectados directamente en la vista de cámara
+  -->
+  <div class="bounding-boxes" *ngIf="currentDetection && aiEnabled">
+    <!-- Los bounding boxes se dibujarían aquí usando coordenadas absolutas -->
+  </div>
+
+</div>

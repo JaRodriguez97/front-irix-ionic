@@ -252,8 +252,21 @@ npx cap run android
 
 - [x] 🔍 si el dispotisitivo cuenta con zoom optico, habilitar y solicitar permiso, si el zoom es digital ignorar todo lo relacionado con el zoom
 - [x] 📱  modularizar tab1, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
-- [ ] 🎥 Captura en tiempo real del stream video en 1280x720
-- [ ] 🤖 Integración de IA (TensorFlow con detección de vehículos con placas vehiculares sin OCR)
+- [x] 🎥 Captura en tiempo real del stream video en 1280x720
+- [x] 🤖 Integración de IA al stream antes capturado (con TensorFlow y detección de vehículos con placas vehiculares sin OCR)
+- [ ] 📱  implementar una navegación mega intuitiva y que complemente el diseño UI/UX principalmente con una barra header con botones de navegación
+- [ ] Validación entrenamiento modelo IA e integración tabla explicita al cliente sobre lectura de IA
+
+### 🚧 En Desarrollo (v1.3)
+- [ ] 📱  modularizar todo lo del código de la versión 1.2, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
+- [ ] implementar toda la semantica de angular 17+ en *if *for etc
+- [ ] analizar viabilidad par encerrar vehiculos en rectaculos en amarillo y las placas en rojo en tiempo real para confirmar seguimiento en tiempo real
+- [ ] Confirmada la detección, del vehiculo realizar captura de imagen en la mayor resolución posible, al siguiente frame de detectar el vehículo con una placa de tamaño adecuada
+
+### 🚧 En Desarrollo (v1.4)
+- [ ] 📱  modularizar todo lo del código de la versión 1.3, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
+- [ ] implementar toda la semantica de angular 17+ en *if *for etc
+- [ ] que la IA se active cuando se active la cámara
 
 ### 🎯 Próximas Funcionalidades (v2.0)
 

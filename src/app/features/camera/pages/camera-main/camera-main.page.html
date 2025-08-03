@@ -19,6 +19,11 @@
     (touchFocus)="onCameraTouch($event)"
   ></app-camera-preview>
 
+  <!-- Overlay de detección de IA superpuesto sobre la cámara -->
+  <app-ai-detection-overlay
+    [isActive]="cameraState.isActive"
+  ></app-ai-detection-overlay>
+
   <!-- Modal de información de la cámara -->
   <app-camera-info-display
     [cameraInfo]="cameraInfo"

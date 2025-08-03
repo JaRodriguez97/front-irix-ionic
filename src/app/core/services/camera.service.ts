@@ -243,6 +243,86 @@ export class CameraService {
     return this.getCurrentState().maxZoom;
   }
 
+  // Stream continuo de la cámara
+  private continuousStream: {
+    isActive: boolean;
+    intervalId?: any;
+    onFrameCallback?: (imageData: string) => void;
+  } = { isActive: false };
+
+  /**
+   * Inicia captura continua del stream de video 1280x720 (v1.2)
+   * Captura fluida y constante de lo que ve la cámara
+   */
+  async startContinuousVideoStream(
+    onFrame: (imageData: string) => void,
+    fps: number = 30
+  ): Promise<{ stop: () => void }> {
+    try {
+      const currentState = this.getCurrentState();
+      if (!currentState.isActive) {
+        throw new Error('La cámara debe estar activa');
+      }
+
+      const intervalMs = 1000 / fps;
+      console.log(`🎥 Iniciando stream continuo a ${fps}FPS (1280x720)`);
+
+      this.continuousStream = {
+        isActive: true,
+        onFrameCallback: onFrame
+      };
+
+      // Captura continua usando setInterval para máxima fluidez
+      this.continuousStream.intervalId = setInterval(async () => {
+        if (!this.continuousStream.isActive) return;
+
+        try {
+          // Capturar frame actual de la cámara en resolución específica
+          const result = await CameraPreview.capture({
+            quality: 85,
+            width: 1280,
+            height: 720
+          });
+
+          if (result.value && this.continuousStream.onFrameCallback) {
+            // 🔍 AQUÍ ESTÁ EL STREAM CAPTURADO - LISTO PARA ANÁLISIS
+            // Cada frame capturado llega aquí como base64
+            this.continuousStream.onFrameCallback(result.value);
+          }
+        } catch (error) {
+          console.error('Error capturando frame:', error);
+        }
+      }, intervalMs);
+
+      console.log('✅ Stream continuo iniciado');
+      return {
+        stop: () => this.stopContinuousVideoStream()
+      };
+    } catch (error) {
+      console.error('Error iniciando stream continuo:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Detiene la captura continua del stream
+   */
+  stopContinuousVideoStream(): void {
+    if (this.continuousStream.intervalId) {
+      clearInterval(this.continuousStream.intervalId);
+    }
+    
+    this.continuousStream = { isActive: false };
+    console.log('🛑 Stream continuo detenido');
+  }
+
+  /**
+   * Verifica si el stream continuo está activo
+   */
+  isContinuousStreamActive(): boolean {
+    return this.continuousStream.isActive;
+  }
+
   /**
    * Verifica permisos de zoom según v1.2: habilitar solo si hay zoom óptico
    */
