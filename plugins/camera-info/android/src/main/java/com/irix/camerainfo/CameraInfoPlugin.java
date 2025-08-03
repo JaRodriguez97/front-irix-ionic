@@ -111,10 +111,38 @@ public class CameraInfoPlugin extends Plugin {
                 cameraInfo.put("supportedResolutions", resolutions);
             }
             
-            // Obtener zoom máximo
-            Float maxZoom = characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
-            if (maxZoom != null) {
-                cameraInfo.put("maxZoom", maxZoom);
+// Identificar tipo de zoom
+            Float maxDigitalZoom = characteristics.get(CameraCharacteristics.SCALER_AVAILABLE_MAX_DIGITAL_ZOOM);
+            boolean hasOpticalZoom = false;
+            String zoomType = "digital";
+            
+            // Verificar si existe zoom óptico mediante características del sensor
+            float[] availableFocalLengths = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+            
+            if (availableFocalLengths != null && availableFocalLengths.length > 1) {
+                // Si hay múltiples distancias focales, indica zoom óptico
+                hasOpticalZoom = true;
+                zoomType = "optical";
+            } else if (maxDigitalZoom != null && maxDigitalZoom > 2.0) {
+                // Para dispositivos con zoom híbrido (óptico + digital)
+                // Algunos fabricantes reportan valores altos cuando hay zoom óptico
+                Float physicalSize = characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE) != null ? 
+                    characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE).getWidth() : null;
+                
+                if (physicalSize != null && physicalSize > 5.0) {
+                    // Sensores más grandes típicamente tienen zoom óptico en dispositivos premium
+                    hasOpticalZoom = true;
+                    zoomType = "hybrid"; // Óptico + Digital
+                }
+            }
+            
+            if (maxDigitalZoom != null) {
+                cameraInfo.put("maxZoom", maxDigitalZoom);
+                cameraInfo.put("hasOpticalZoom", hasOpticalZoom);
+                cameraInfo.put("zoomType", zoomType);
+                
+                // Solo habilitar controles de zoom si hay zoom óptico
+                cameraInfo.put("enableZoomControls", hasOpticalZoom);
             }
             
             // Obtener modos de enfoque soportados

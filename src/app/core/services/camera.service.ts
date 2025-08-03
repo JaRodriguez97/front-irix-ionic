@@ -15,7 +15,10 @@ export class CameraService {
     currentResolution: null,
     supportedResolutions: [],
     zoomLevel: 1,
-    maxZoom: 1
+    maxZoom: 1,
+    hasOpticalZoom: false,
+    zoomType: 'digital',
+    enableZoomControls: false
   });
 
   private defaultSettings: CameraSettings = {
@@ -56,7 +59,10 @@ export class CameraService {
         currentCamera: camera,
         supportedResolutions: resolutions,
         currentResolution: maxResolution,
-        maxZoom: cameraInfo?.maxZoom || 1
+        maxZoom: cameraInfo?.maxZoom || 1,
+        hasOpticalZoom: cameraInfo?.hasOpticalZoom || false,
+        zoomType: cameraInfo?.zoomType || 'digital',
+        enableZoomControls: cameraInfo?.enableZoomControls || false
       });
 
       console.log('Capacidades de cámara inicializadas:', {
@@ -215,11 +221,12 @@ export class CameraService {
   }
 
   /**
-   * Verifica si el zoom está soportado
+   * Verifica si el zoom está soportado según v1.2 (solo óptico)
    */
   isZoomSupported(): boolean {
     const currentState = this.getCurrentState();
-    return currentState.maxZoom > 1;
+    // V1.2: Solo soportar zoom si es óptico
+    return currentState.enableZoomControls === true && currentState.hasOpticalZoom === true;
   }
 
   /**
@@ -237,22 +244,29 @@ export class CameraService {
   }
 
   /**
-   * Verifica permisos de zoom digital
+   * Verifica permisos de zoom según v1.2: habilitar solo si hay zoom óptico
    */
-  async checkZoomPermissions(): Promise<{ hasPermission: boolean; type: 'digital' | 'optical' | 'none' }> {
+  async checkZoomPermissions(): Promise<{ hasPermission: boolean; type: 'digital' | 'optical' | 'hybrid' | 'none' }> {
     try {
       const currentState = this.getCurrentState();
       const cameraInfo = await this.cameraInfoService.getCameraInfo(currentState.currentCamera);
       
       if (!cameraInfo || !cameraInfo.maxZoom || cameraInfo.maxZoom <= 1) {
+        console.log('No hay capacidades de zoom disponibles');
         return { hasPermission: false, type: 'none' };
       }
 
-      // La mayoría de cámaras móviles modernas soportan zoom digital
-      // El zoom óptico es raro en dispositivos móviles
-      const zoomType = cameraInfo.maxZoom > 10 ? 'digital' : 'digital';
-      
-      return { hasPermission: true, type: zoomType };
+      // IMPLEMENTACIÓN V1.2: Solo habilitar zoom si es óptico
+      if (cameraInfo.hasOpticalZoom && cameraInfo.enableZoomControls) {
+        console.log(`Zoom ${cameraInfo.zoomType} detectado - HABILITANDO controles`);
+        return { 
+          hasPermission: true, 
+          type: cameraInfo.zoomType as 'optical' | 'hybrid'
+        };
+      } else {
+        console.log('Solo zoom digital disponible - IGNORANDO según v1.2');
+        return { hasPermission: false, type: 'digital' };
+      }
     } catch (error) {
       console.error('Error al verificar permisos de zoom:', error);
       return { hasPermission: false, type: 'none' };

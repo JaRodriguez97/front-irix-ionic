@@ -1,0 +1,14 @@
+.camera-container {
+  position: relative;
+  padding: 8px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #000;
+}
+
+// Ocultar la barra de herramientas cuando la cámara está activa
+ion-content.camera-active {
+  --padding-top: 0;
+  --padding-bottom: 0;
+}

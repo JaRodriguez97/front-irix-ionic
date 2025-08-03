@@ -1,0 +1,38 @@
+.no-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  p {
+    margin: 0;
+    font-size: 16px;
+  }
+}
+
+ion-list {
+  ion-item {
+    ion-label {
+      h3 {
+        font-weight: 600;
+        color: var(--ion-color-primary);
+        margin-bottom: 4px;
+      }
+
+      p {
+        color: var(--ion-color-medium);
+        font-size: 14px;
+        white-space: normal;
+        word-wrap: break-word;
+      }
+    }
+  }
+}

@@ -1,0 +1,82 @@
+.camera-preview {
+  flex: 1;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff3;
+  position: relative;
+  min-height: 400px; // Aumentar altura mínima para mejor calidad
+  max-height: 70vh; // Limitar altura máxima
+  touch-action: manipulation;
+
+  // Asegurar que el video mantenga proporciones
+  aspect-ratio: 4/3; // Proporción común de cámara
+
+  // Estado inactivo de la cámara
+  &.camera-inactive {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+
+  .camera-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.7);
+    text-align: center;
+
+    ion-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+  }
+
+  .focus-indicator {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 100;
+
+    p {
+      margin: 0;
+    }
+  }
+}
+
+// Estilos globales para el plugin de cámara con máxima calidad
+:global(.cameraPreview) {
+  border-radius: 12px !important;
+  object-fit: cover !important;
+  width: 100% !important;
+  height: 100% !important;
+
+  // Optimizar renderizado de video para máxima calidad
+  image-rendering: -webkit-optimize-contrast !important;
+  image-rendering: crisp-edges !important;
+
+  // Asegurar suavizado y calidad de imagen
+  -webkit-backface-visibility: hidden !important;
+  backface-visibility: hidden !important;
+  -webkit-transform: translateZ(0) !important;
+  transform: translateZ(0) !important;
+
+  // Mejorar renderizado en dispositivos de alta densidad
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}

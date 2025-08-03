@@ -1,0 +1,63 @@
+.top-controls {
+  margin-bottom: 8px;
+  z-index: 1000;
+
+  ion-button {
+    --border-radius: 8px;
+  }
+}
+
+.bottom-controls {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 12px;
+  border-radius: 12px 12px 0 0;
+
+  .control-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &.actions {
+      justify-content: space-around;
+      padding: 8px 0;
+
+      ion-button {
+        --color: white;
+
+        &[color="danger"] {
+          --background: #dc3545;
+          --border-radius: 50px;
+          width: 70px;
+          height: 70px;
+        }
+      }
+    }
+
+    &.indicators {
+      justify-content: space-around;
+
+      .indicator {
+        color: #fff;
+        font-size: 10px;
+        text-transform: uppercase;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 2px 8px;
+        border-radius: 10px;
+      }
+    }
+  }
+
+  ion-button {
+    --color: white;
+    --background: transparent;
+
+    &[disabled] {
+      --color: rgba(255, 255, 255, 0.3);
+    }
+  }
+}

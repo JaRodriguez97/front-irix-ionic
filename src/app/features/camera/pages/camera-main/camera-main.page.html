@@ -1,0 +1,27 @@
+<div class="camera-container">
+  <!-- Controles superiores -->
+  <app-camera-controls
+    [isActive]="cameraState.isActive"
+    [currentCamera]="cameraState.currentCamera"
+    [currentZoom]="cameraState.zoomLevel"
+    [maxZoom]="cameraState.maxZoom"
+    [isZoomSupported]="isZoomSupported"
+    (startCamera)="startCamera()"
+    (stopCamera)="stopCamera()"
+    (flipCamera)="flipCamera()"
+    (showInfo)="getDetailedCameraInfo()"
+    (captureImage)="captureHighQuality()"
+  ></app-camera-controls>
+
+  <!-- Vista previa de la cámara -->
+  <app-camera-preview
+    [isActive]="cameraState.isActive"
+    (touchFocus)="onCameraTouch($event)"
+  ></app-camera-preview>
+
+  <!-- Modal de información de la cámara -->
+  <app-camera-info-display
+    [cameraInfo]="cameraInfo"
+    [isOpen]="infoModalOpen"
+  ></app-camera-info-display>
+</div>

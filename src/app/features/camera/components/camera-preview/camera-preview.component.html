@@ -1,0 +1,20 @@
+<!-- Vista de la cámara con táctil -->
+<div
+  id="cameraPreview"
+  class="camera-preview"
+  (touchstart)="onCameraTouch($event)"
+  [class.camera-inactive]="!isActive"
+>
+  <!-- Indicador de enfoque -->
+  @if (isActive) {
+  <div class="focus-indicator">
+    <p>Toca para enfocar</p>
+  </div>
+  }<!-- Mensaje cuando la cámara está inactiva -->
+  @else {
+  <div class="camera-placeholder">
+    <ion-icon name="camera-outline" size="large"></ion-icon>
+    <p>Presiona "Iniciar Cámara" para comenzar</p>
+  </div>
+  }
+</div>

@@ -8,11 +8,19 @@
   background: #000;
 
   .top-controls {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     z-index: 1000;
+    display: flex;
+    gap: 8px;
+    flex-direction: column;
 
     ion-button {
       --border-radius: 8px;
+      --padding-start: 12px;
+      --padding-end: 12px;
+      height: 44px;
+      font-size: 14px;
+      font-weight: 500;
     }
   }
 
@@ -23,12 +31,12 @@
     overflow: hidden;
     background-color: #fff3;
     position: relative;
-    min-height: 400px; // Aumentar altura mínima para mejor calidad
-    max-height: 70vh; // Limitar altura máxima
+    min-height: 60vh; // Aumentar significativamente la altura
+    max-height: 75vh; // Permitir más altura
     touch-action: manipulation;
 
     // Asegurar que el video mantenga proporciones
-    aspect-ratio: 4/3; // Proporción común de cámara
+    aspect-ratio: 16/9; // Proporción más moderna
 
     // Estado inactivo de la cámara
     &.camera-inactive {

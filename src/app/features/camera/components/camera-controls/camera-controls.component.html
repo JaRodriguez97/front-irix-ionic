@@ -1,0 +1,46 @@
+<!-- Controles superiores -->
+<div class="top-controls">
+  <ion-button
+    expand="block"
+    color="primary"
+    (click)="onToggleCamera()"
+  >
+    <ion-icon name="camera" slot="start"></ion-icon>
+    {{ isActive ? 'Detener Cámara' : 'Iniciar Cámara' }}
+  </ion-button>
+
+  <ion-button expand="block" color="secondary" (click)="onShowInfo()">
+    <ion-icon name="information-circle" slot="start"></ion-icon>
+    Información de la Cámara
+  </ion-button>
+</div>
+
+<!-- Controles inferiores -->
+@if (isActive) {
+  <div class="bottom-controls">
+    <div class="control-row actions">
+      <ion-button color="medium" (click)="onFlipCamera()">
+        <ion-icon name="camera-reverse" slot="start"></ion-icon>
+        Cambiar
+      </ion-button>
+
+      <ion-button color="danger" (click)="onCaptureImage()">
+        <ion-icon name="camera" slot="start"></ion-icon>
+        Capturar
+      </ion-button>
+    </div>
+
+    <!-- Indicadores -->
+    <div class="control-row indicators">
+      <span class="indicator">
+        {{ currentCamera === 'rear' ? 'Trasera' : 'Frontal' }}
+      </span>
+      <span class="indicator">HD</span>
+      @if (isZoomSupported) {
+        <span class="indicator">
+          Zoom: {{ currentZoom }}x/{{ maxZoom }}x
+        </span>
+      }
+    </div>
+  </div>
+}

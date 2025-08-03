@@ -250,9 +250,9 @@ npx cap run android
 
 ### 🚧 En Desarrollo (v1.2)
 
-- [ ] 🔍 si el dispotisitivo cuenta con zoom optico, habilitar y solicitar permiso, si el zoom es digital ignorar todo lo relacionado con el zoom
-- [ ] 📱  modularizar tab1, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
-- [ ] 🎥 Captura en tiempo real del stream video en 1280x720 de calidad
+- [x] 🔍 si el dispotisitivo cuenta con zoom optico, habilitar y solicitar permiso, si el zoom es digital ignorar todo lo relacionado con el zoom
+- [x] 📱  modularizar tab1, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
+- [ ] 🎥 Captura en tiempo real del stream video en 1280x720
 - [ ] 🤖 Integración de IA (TensorFlow con detección de vehículos con placas vehiculares sin OCR)
 
 ### 🎯 Próximas Funcionalidades (v2.0)

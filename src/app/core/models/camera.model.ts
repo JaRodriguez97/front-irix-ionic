@@ -10,6 +10,9 @@ export interface CameraInfo {
   facing: 'front' | 'back';
   supportedResolutions: CameraResolution[];
   maxZoom?: number;
+  hasOpticalZoom?: boolean;
+  zoomType?: 'digital' | 'optical' | 'hybrid';
+  enableZoomControls?: boolean;
   supportedFocusModes?: string[];
   supportedIsoRanges?: { min: number; max: number };
   supportedExposureRange?: { min: number; max: number };
@@ -28,6 +31,9 @@ export interface CameraState {
   supportedResolutions: CameraResolution[];
   zoomLevel: number;
   maxZoom: number;
+  hasOpticalZoom?: boolean;
+  zoomType?: 'digital' | 'optical' | 'hybrid';
+  enableZoomControls?: boolean;
 }
 
 export interface CameraSettings {
