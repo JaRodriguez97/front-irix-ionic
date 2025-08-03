@@ -1,0 +1,70 @@
+<ion-card *ngIf="isVisible">
+  <ion-card-header>
+    <ion-card-title>
+      <ion-icon name="stats-chart-outline"></ion-icon>
+      Detecciones de IA
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list>
+      <ion-item>
+        <ion-label>Total de Vehículos</ion-label>
+        <ion-badge color="primary">{{currentStats.totalDetections}}</ion-badge>
+      </ion-item>
+      <ion-item *ngFor="let type of ['car', 'truck', 'bus', 'motorcycle', 'bicycle']">
+        <ion-label>{{type | titlecase}}s Detectados</ion-label>
+        <ion-badge color="tertiary">{{currentStats.vehicleTypes[type] || 0}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Placas Detectadas</ion-label>
+        <ion-badge color="success">{{currentStats.platesDetected}}</ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Confianza Promedio</ion-label>
+        <ion-badge [color]="getConfidenceColor(currentStats.averageConfidence)">
+          {{formatConfidence(currentStats.averageConfidence)}}
+        </ion-badge>
+      </ion-item>
+      <ion-item>
+        <ion-label>Tiempo de Procesamiento</ion-label>
+        <ion-badge color="warning">{{currentStats.processingTime | number:'1.1-1'}} ms</ion-badge>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="full" (click)="openStatsModal()">Ver Detalles</ion-button>
+  </ion-card-content>
+</ion-card>
+
+<ion-modal [isOpen]="isModalOpen" onWillDismiss="closeModal()">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Detalles de IA</ion-title>
+      <ion-buttons slot="end">
+        <ion-button (click)="closeModal()">
+          <ion-icon name="close"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <ion-list>
+      <ion-item *ngFor="let detection of recentDetections">
+        <ion-icon [name]="getVehicleIcon(detection.type)" [color]="getConfidenceColor(detection.confidence)"></ion-icon>
+        <ion-label>
+          {{detection.type | titlecase}}
+          <p>Confianza: {{formatConfidence(detection.confidence)}}</p>
+          <p *ngIf="detection.hasLicensePlate">Con Placa</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+    <ion-item-divider>Estado del Modelo</ion-item-divider>
+    <ion-item>
+      <ion-icon slot="start" [name]="getModelStatus().icon" [color]="getModelStatus().color"></ion-icon>
+      <ion-label>
+        {{modelValidation.modelName}} v{{modelValidation.version}}
+        <p>Precisión: {{modelValidation.accuracy | percent}}</p>
+        <p>Backend: {{modelValidation.backend}}</p>
+      </ion-label>
+    </ion-item>
+  </ion-content>
+</ion-modal>
+

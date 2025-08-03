@@ -1,0 +1,105 @@
+ion-card {
+  margin: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  
+  ion-card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-primary);
+    
+    ion-icon {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+ion-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  
+  ion-label {
+    font-weight: 500;
+  }
+  
+  ion-badge {
+    font-weight: 600;
+    min-width: 40px;
+    text-align: center;
+  }
+}
+
+ion-button {
+  margin-top: 12px;
+  --border-radius: 8px;
+}
+
+// Modal específico
+ion-modal {
+  ion-header {
+    ion-toolbar {
+      --background: var(--ion-color-primary);
+      --color: white;
+    }
+  }
+  
+  ion-content {
+    --padding-start: 0;
+    --padding-end: 0;
+    
+    ion-item {
+      ion-icon {
+        margin-right: 12px;
+        font-size: 1.4rem;
+      }
+    }
+    
+    ion-item-divider {
+      --background: var(--ion-color-light);
+      font-weight: 600;
+      color: var(--ion-color-primary);
+    }
+  }
+}
+
+// Animaciones para las estadísticas
+.stats-animation {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Estados de confianza
+.confidence-excellent {
+  --background: var(--ion-color-success);
+}
+
+.confidence-good {
+  --background: var(--ion-color-warning);
+}
+
+.confidence-poor {
+  --background: var(--ion-color-danger);
+}
+
+// Responsive
+@media (max-width: 768px) {
+  ion-card {
+    margin: 8px;
+  }
+  
+  ion-item {
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+}

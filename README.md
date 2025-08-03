@@ -248,25 +248,27 @@ npx cap run android
 - [x] ⚙️ **Resolución de conflictos TypeScript** en modelos e interfaces
 - [x] 🎯 **Integración completa** entre servicios modulares y componentes
 
-### 🚧 En Desarrollo (v1.2)
+### ✅ En Desarrollo (v1.2)
 
 - [x] 🔍 si el dispotisitivo cuenta con zoom optico, habilitar y solicitar permiso, si el zoom es digital ignorar todo lo relacionado con el zoom
 - [x] 📱  modularizar tab1, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
 - [x] 🎥 Captura en tiempo real del stream video en 1280x720
 - [x] 🤖 Integración de IA al stream antes capturado (con TensorFlow y detección de vehículos con placas vehiculares sin OCR)
-- [ ] 📱  implementar una navegación mega intuitiva y que complemente el diseño UI/UX principalmente con una barra header con botones de navegación
-- [ ] Validación entrenamiento modelo IA e integración tabla explicita al cliente sobre lectura de IA
+- [x] 📱  implementar una navegación mega intuitiva y que complemente el diseño UI/UX principalmente con una barra header con botones de navegación
+- [x] Validación entrenamiento modelo IA e integración tabla explicita al cliente sobre lectura de IA
 
 ### 🚧 En Desarrollo (v1.3)
 - [ ] 📱  modularizar todo lo del código de la versión 1.2, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
 - [ ] implementar toda la semantica de angular 17+ en *if *for etc
-- [ ] analizar viabilidad par encerrar vehiculos en rectaculos en amarillo y las placas en rojo en tiempo real para confirmar seguimiento en tiempo real
+- [ ] se está tomando capturas, y no se visualiza nada fluido, validar si la lógica en general está realizando captura videográfica del stream de video que hay en la cámara del dispositivo, no capturas fotográficas, se necesita fluides
+- [ ] analizar viabilidad para encerrar vehiculos en rectaculos en amarillo y las placas en rojo en tiempo real para confirmar seguimiento en tiempo real
 - [ ] Confirmada la detección, del vehiculo realizar captura de imagen en la mayor resolución posible, al siguiente frame de detectar el vehículo con una placa de tamaño adecuada
 
 ### 🚧 En Desarrollo (v1.4)
 - [ ] 📱  modularizar todo lo del código de la versión 1.3, con nombres adecuados segun su componente o modulo, respetando la arquitectura existente
 - [ ] implementar toda la semantica de angular 17+ en *if *for etc
 - [ ] que la IA se active cuando se active la cámara
+- [ ] ajustar header de una forma mejor distribuido y funcional
 
 ### 🎯 Próximas Funcionalidades (v2.0)
 

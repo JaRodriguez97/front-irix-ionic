@@ -1,0 +1,62 @@
+<!-- Header principal con gradiente -->
+<ion-header [translucent]="true" class="irix-header">
+  <ion-toolbar class="header-toolbar">
+    <!-- Botón de retroceso -->
+    @if (showBackButton) {
+      <ion-buttons slot="start">
+        <ion-button 
+          (click)="onBackClick()" 
+          fill="clear" 
+          class="back-button"
+        >
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    }
+
+    <!-- Título principal -->
+    <ion-title class="header-title">
+      <div class="title-container">
+        <div class="main-title">
+          <ion-icon name="camera-outline" class="title-icon"></ion-icon>
+          {{ title }}
+        </div>
+        @if (subtitle) {
+          <div class="subtitle">{{ subtitle }}</div>
+        }
+      </div>
+    </ion-title>
+
+    <!-- Indicador de detecciones de IA -->
+    @if (aiDetections > 0) {
+      <div class="ai-indicator" slot="end">
+        <ion-icon name="layers-outline"></ion-icon>
+        <ion-badge color="success">{{ aiDetections }}</ion-badge>
+      </div>
+    }
+
+    <!-- Botones de acción -->
+    <ion-buttons slot="end" class="header-actions">
+      @for (action of actions; track action.id) {
+        <ion-button
+          (click)="onActionClick(action.id)"
+          [color]="action.color || 'medium'"
+          [disabled]="action.disabled"
+          fill="clear"
+          class="action-button"
+          [class.active]="action.active"
+        >
+          <ion-icon 
+            [name]="action.icon" 
+            slot="icon-only"
+          ></ion-icon>
+          @if (action.badge && action.badge > 0) {
+            <ion-badge color="danger" class="action-badge">
+              {{ action.badge > 99 ? '99+' : action.badge }}
+            </ion-badge>
+          }
+        </ion-button>
+      }
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

@@ -1,5 +1,14 @@
+<!-- Header principal con navegación intuitiva -->
+<app-header
+  [title]="'IRIX Camera'"
+  [subtitle]="cameraState.isActive ? (cameraState.currentCamera === 'rear' ? 'Cámara Trasera' : 'Cámara Frontal') : 'Desactivada'"
+  [actions]="headerActions"
+  [aiDetections]="aiDetections"
+  (actionClick)="onHeaderAction($event)"
+></app-header>
+
 <div class="camera-container">
-  <!-- Controles superiores -->
+  <!-- Controles superiores (ahora más simples) -->
   <app-camera-controls
     [isActive]="cameraState.isActive"
     [currentCamera]="cameraState.currentCamera"
@@ -30,3 +39,9 @@
     [isOpen]="infoModalOpen"
   ></app-camera-info-display>
 </div>
+
+<!-- Tabla de detecciones de IA -->
+<app-ai-detections-table
+  [isVisible]="showAiTable"
+  [detectionHistory]="detectionHistory"
+></app-ai-detections-table>
